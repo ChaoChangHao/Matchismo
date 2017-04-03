@@ -15,13 +15,19 @@
 {
     int score = 0;
     
-    if([otherCards count] == 1) {
-        PlayingCard *otherCard = [otherCards firstObject];
-        if(otherCard.rank == self.rank) {
-            score = 4;
-        } else if([otherCard.suit isEqualToString:self.suit]) {
-            score = 1;
+    NSUInteger numOtherCards = [otherCards count];
+    
+    if (numOtherCards) {
+        for (PlayingCard *card in otherCards) {
+            if ([self.suit isEqualToString:card.suit]) {
+                score += 1;
+            } else if (self.rank == card.rank) {
+                score += 4;
+            }
         }
+    }
+    if (numOtherCards > 1) {
+        score += [[otherCards firstObject] match:[otherCards subarrayWithRange:NSMakeRange(1, numOtherCards - 1)]];
     }
     return score;
 }
